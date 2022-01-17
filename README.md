@@ -1,8 +1,8 @@
-# ApiRick
+# ApiRick 
 
 Este projeto foi gerado com [Angular CLI] versão 12.2.8.
 
-## Clonar
+## Clonar 
 
 Para clonar, utilize a url HTTPS disponivel no github e execute `git clone UrLHTTPS` (Substituir UrLHTTPS pela url pega no git hub).
 
