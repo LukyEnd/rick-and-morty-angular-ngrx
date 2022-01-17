@@ -1,0 +1,63 @@
+.items-weapper {
+    width: 100vw;
+}
+
+.items {
+    margin-top: 50px;
+    display: flex;
+    overflow: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.item {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 300px;
+    scroll-snap-align: start;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation-name: animacao;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes animacao {
+    0% {
+        margin-left: 0;
+    }
+    15% {
+        margin-left: 0;
+    }
+
+    25% {
+        margin-left: -100%;
+    }
+    40% {
+        margin-left: -100%;
+    }
+
+    50% {
+        margin-left: -200%;
+    }
+    65% {
+        margin-left: -200%;
+    }
+
+    75% {
+        margin-left: -300%;
+    }
+    90% {
+        margin-left: -300%;
+    }
+
+    100% {
+        margin-left: 0;
+    }
+}

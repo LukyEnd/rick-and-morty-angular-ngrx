@@ -1,0 +1,40 @@
+<div class="scroolable">
+	<li>
+		<h1>
+			<strong>{{ charSuccess.name }}</strong>
+		</h1>
+	</li>
+	<li>
+		<img [src]="charSuccess.image" />
+	</li>
+	<li>
+		<strong>ID: </strong> {{ charSuccess.id }}
+	</li>
+	<li>
+		<strong>Estado: </strong>{{ charSuccess.status | translatorsBr}}
+	</li>
+	<li>
+		<strong>Espécie: </strong>{{ charSuccess.species | translatorsBr}}
+	</li>
+	<li>
+		<strong>Tipo: </strong>{{ charSuccess.type | translatorsBr}}
+	</li>
+	<li>
+		<strong>Gênero: </strong>{{ charSuccess.gender | translatorsBr}}
+	</li>
+	<li>
+		<strong>Lugar de Origem: </strong> {{ charSuccess.origin.name | translatorsBr}} - <a [routerLink]=""
+			(click)="openDialog(charSuccess.origin.url)"> Mais Informações...</a>
+	</li>
+	<li>
+		<strong> Localização Atual: </strong> {{ charSuccess.location.name | translatorsBr}} - <a [routerLink]=""
+			(click)="openDialog(charSuccess.location.url)"> Mais Informações...</a>
+	</li>
+	<li>
+		<strong> Data de Criação: </strong>{{ charSuccess.created | date: 'dd/MM/yyyy' }}
+	</li>
+	<li class="ult">
+		<strong> Lista de Ep. Participados por {{ charSuccess.name }}: </strong><a [routerLink]=""
+			(click)="openList(charSuccess.episode)"> Abrir...</a>
+	</li>
+</div>
