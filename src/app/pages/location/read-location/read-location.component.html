@@ -1,12 +1,12 @@
-<div class="scroolable" *ngIf="isValid">
+<div class="scroolable" *ngIf="locationData != null">
 	<li>
-		<h1>{{ locationInfo.name }}</h1>
+		<h1>{{ locationData.name }}</h1>
 	</li>
-	<li><strong>ID: </strong>{{ locationInfo.id }}</li>
-	<li><strong>Tipo: </strong>{{ locationInfo.type | translatorsBr}}</li>
-	<li><strong>Dimensão: </strong>{{ locationInfo.dimension | translatorsBr}}</li>
-	<li><strong>Data de Criação: </strong>{{ locationInfo.created | date: 'dd/MM/yyyy' }}</li>
+	<li><strong>ID: </strong>{{ locationData.id }}</li>
+	<li><strong>Tipo: </strong>{{ locationData.type | translatorsBr}}</li>
+	<li><strong>Dimensão: </strong>{{ locationData.dimension | translatorsBr}}</li>
+	<li><strong>Data de Criação: </strong>{{ locationData.created | date: 'dd/MM/yyyy' }}</li>
 </div>
-<div *ngIf="!isValid">
+<div *ngIf="locationData == null">
 	<h2>Desculpe, Informação Desconhecida</h2>
 </div>

@@ -3,7 +3,7 @@
 		<h1>Lista de Personagens</h1>
 	</div>
 	<div class="container">
-		<div *ngFor="let character of charSuccess" class="ngfor">
+		<div *ngFor="let character of chararterData" class="ngfor">
 			<mat-card>
 				<mat-card-title-group>
 					<mat-card-title class="card-title">
@@ -25,13 +25,13 @@
 					<img mat-card-lg-image loading="lazy" [alt]="" [src]="character.image" />
 				</mat-card-title-group>
 				<mat-card-content class="card-button">
-					<button mat-button class="button-mast" (click)="openDialog(character)"> Ver Mais...</button>
+					<button mat-button class="button-mast" (click)="openDialog(character.url)"> Ver Mais...</button>
 				</mat-card-content>
 			</mat-card>
 		</div>
 	</div>
 	<div class="footer">
-		<button (click)="pagePrevInfo()" *ngIf="buttonPrevNull" class="page-next">Anterior</button>
-		<button (click)="pageNextInfo()" *ngIf="buttonNextNull" class="page-prev">Proxima</button>
+		<button (click)="buttonPrev()" *ngIf="pageInfo?.prev != null" class="page-next">Anterior</button>
+		<button (click)="buttonNext()" *ngIf="pageInfo?.next != null" class="page-prev">Proxima</button>
 	</div>
 </div>

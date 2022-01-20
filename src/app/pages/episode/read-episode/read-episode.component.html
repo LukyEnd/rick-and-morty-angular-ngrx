@@ -1,12 +1,13 @@
-<div class="scroolable" *ngIf="isValid">
+<div class="scroolable" *ngIf="episodeData != null">
 	<li>
-		<h1 class="nameEpisode"><strong>{{ episodeInfo.name }}</strong></h1>
+		<h1 class="nameEpisode"><strong>{{ episodeData.name }}</strong></h1>
 	</li>
-	<li><strong>ID: </strong>{{ episodeInfo.id }}</li>
-	<li><strong>Numero do Ep.: </strong>{{ episodeInfo.episode | episodeFormat}}</li>
-	<li><strong>Data de Criação: </strong>{{ episodeInfo.air_date | translatorsMonth}}</li>
-	<li><strong>Data de Lançamento: </strong>{{ episodeInfo.created | date: 'dd/MM/yyyy' }}</li>
+	<li><strong>ID: </strong>{{ episodeData.id }}</li>
+	<li><strong>Numero do Ep.: </strong>{{ episodeData.episode | episodeFormat}}</li>
+	<li><strong>Data de Criação: </strong>{{ episodeData.air_date | translatorsMonth}}</li>
+	<li><strong>Data de Lançamento: </strong>{{ episodeData.created | date: 'dd/MM/yyyy' }}</li>
 </div>
-<div *ngIf="!isValid">
+<div *ngIf="episodeData == null">
 	<h2>Desculpe, Informação Desconhecida</h2>
+	{{episodeDataErro |json}}
 </div>

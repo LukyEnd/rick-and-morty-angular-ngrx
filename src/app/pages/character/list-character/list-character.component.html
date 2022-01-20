@@ -1,6 +1,6 @@
 <h1>Personagens</h1>
 <div class="scroolable">
-	<div *ngFor="let character of charList" class="ngfor">
+	<div *ngFor="let character of characterList" class="ngfor">
 		<li>
 			<strong>N° {{ character | throughStringCharacter }}: </strong><a [routerLink]=""
 				(click)="openDialog(character)"> Mais Informações...</a>

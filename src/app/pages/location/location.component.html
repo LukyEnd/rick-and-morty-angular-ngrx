@@ -3,7 +3,7 @@
 		<h1>Localizações</h1>
 	</div>
 	<div class="container">
-		<div *ngFor="let location of locationSuccess" class="ngfor">
+		<div *ngFor="let location of locationData" class="ngfor">
 			<li>
 				<h2><strong>{{ location.name }}</strong></h2>
 			</li>
@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	<div class="footer">
-		<button (click)="pagePrevInfo()" *ngIf="buttonPrevNull" class="page-next">Anterior</button>
-		<button (click)="pageNextInfo()" *ngIf="buttonNextNull" class="page-prev">Proxima</button>
+		<button (click)="buttonPrevLocation()" *ngIf="infoPage?.prev != null" class="page-next">Anterior</button>
+		<button (click)="buttonNextLocation()" *ngIf="infoPage?.next != null" class="page-prev">Proxima</button>
 	</div>
 </div>

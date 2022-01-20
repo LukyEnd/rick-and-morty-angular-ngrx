@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ServiceCharacterService } from 'src/app/service/service-character.service';
-import { ServiceEpisodeService } from 'src/app/service/service-episode.service';
-import { ServicePageInfoService } from 'src/app/service/service-page-info.service';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { getPageEpisodeError, getPageEpisodeSuccess } from 'src/app/store/selectors/page-episode.selectors';
+import { getPageInfoError, getPageInfoSuccess } from 'src/app/store/selectors/page-info.selectors';
 import { environment } from 'src/environments/environment.prod';
 import { ApiEpisodeModel } from '../../service/model/episode.model';
+import * as ListCharacterAction from '../../store/actions/list-character.actions';
+import * as EpisodeLocationAction from '../../store/actions/page-episode.actions';
+import * as InfoPageAction from '../../store/actions/page-info.actions';
 import { ListCharacterComponent } from '../character/list-character/list-character.component';
+import { ApiPageModel } from './../../service/model/page.module';
 
 @Component({
 	selector: 'app-episode',
@@ -13,82 +18,73 @@ import { ListCharacterComponent } from '../character/list-character/list-charact
 	styleUrls: ['./episode.component.scss', '../base/base.component.scss'],
 })
 export class EpisodeComponent implements OnInit {
-	episodeSuccess!: ApiEpisodeModel[];
-	episodeError!: string;
-	currentUrl!: string;
+	infoPage$!: Observable<ApiPageModel | null>;
+	infoPage!: ApiPageModel | null;
+	infoPageErro$!: Observable<string>;
+	infoPageErro!: string;
 
-	buttonPrevNull: boolean = false;
-	buttonNextNull: boolean = true;
+	episodeData$!: Observable<ApiEpisodeModel[] | null>;
+	episodeData!: ApiEpisodeModel[] | null;
+	episodeDataErro$!: Observable<string>;
+	episodeDataErro!: string;
 
-	constructor(
-		private serv: ServiceEpisodeService,
-		private servChar: ServiceCharacterService,
-		private resp: ServicePageInfoService,
-		private dialog: MatDialog
-	) {}
+	subscription: Subscription[] = [];
+
+	constructor(private dialog: MatDialog, private store: Store) {
+		this.episodeData$ = this.store.select(getPageEpisodeSuccess);
+		this.episodeDataErro$ = this.store.select(getPageEpisodeError);
+		this.infoPage$ = this.store.select(getPageInfoSuccess);
+		this.infoPageErro$ = this.store.select(getPageInfoError);
+	}
 
 	ngOnInit(): void {
-		this.episodeInfo();
+		this.actionPageInitial();
+		this.dataPage();
 	}
 
-	episodeInfo() {
-		this.serv.apiEpisodeInfo().subscribe(
-			(data) => {
-				this.episodeSuccess = data;
-				this.currentUrl = `${environment.url}episode`;
-			},
-			(error) => {
-				this.episodeError = error;
-			}
+	actionPageInitial() {
+		this.store.dispatch(InfoPageAction.loadPageInfos({ urlBase: `${environment.url}episode` }));
+		this.store.dispatch(EpisodeLocationAction.loadPageEpisodes({ urlBase: `${environment.url}episode` }));
+	}
+	dataPage() {
+		this.subscription.push(
+			this.infoPage$.subscribe((data) => {
+				this.infoPage = data;
+			})
+		);
+		this.subscription.push(
+			this.infoPageErro$.subscribe((erro) => {
+				this.infoPageErro = erro;
+			})
+		);
+		this.subscription.push(
+			this.episodeData$.subscribe((data) => {
+				this.episodeData = data;
+			})
+		);
+		this.subscription.push(
+			this.episodeDataErro$.subscribe((erro) => {
+				this.episodeDataErro = erro;
+			})
 		);
 	}
 
-	pagePrevInfo() {
-		this.resp.apiPageInfo(this.currentUrl).subscribe(
-			(pageInfo) => {
-				let index = pageInfo.prev.indexOf('page=');
-				let id = pageInfo.prev.substring(index + 5);
-				if (pageInfo.prev == null || id == '1') {
-					this.buttonPrevNull = false;
-					this.currentUrl = `${environment.url}episode`;
-				} else {
-					this.buttonNextNull = true;
-					this.currentUrl = pageInfo.prev;
-				}
-				this.serv.buttonPageEpisode(pageInfo.prev).subscribe((data) => {
-					this.episodeSuccess = data;
-				});
-			},
-			(erro) => {
-				this.episodeError = erro;
-			}
-		);
+	buttonNextPage() {
+		if (this.infoPage?.next != null) {
+			this.store.dispatch(InfoPageAction.loadPageInfos({ urlBase: this.infoPage.next }));
+			this.store.dispatch(EpisodeLocationAction.loadPageEpisodes({ urlBase: this.infoPage.next }));
+		}
 	}
 
-	pageNextInfo() {
-		this.resp.apiPageInfo(this.currentUrl).subscribe(
-			(pageInfo) => {
-				let index = pageInfo.next.indexOf('page=');
-				let id = pageInfo.next.substring(index + 5);
-				if (pageInfo.next == null || id == `${pageInfo.pages}`) {
-					this.currentUrl = pageInfo.next;
-					this.buttonNextNull = false;
-				} else {
-					this.buttonPrevNull = true;
-					this.currentUrl = pageInfo.next;
-				}
-				this.serv.buttonPageEpisode(pageInfo.next).subscribe((data) => {
-					this.episodeSuccess = data;
-				});
-			},
-			(erro) => {
-				this.episodeError = erro;
-			}
-		);
+	buttonPrevPage() {
+		if (this.infoPage?.prev != null) {
+			this.store.dispatch(InfoPageAction.loadPageInfos({ urlBase: this.infoPage.prev }));
+			this.store.dispatch(EpisodeLocationAction.loadPageEpisodes({ urlBase: this.infoPage.prev }));
+		}
 	}
 
 	openList(charList: []) {
+		this.store.dispatch(ListCharacterAction.loadListCharacter({ listCharacter: charList }));
 		this.dialog.open(ListCharacterComponent);
-		return this.servChar.setCharacterList(charList);
 	}
 }

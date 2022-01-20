@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ApiEpisodeModel } from 'src/app/service/model/episode.model';
-import { ServiceEpisodeService } from 'src/app/service/service-episode.service';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { getListEpisode } from 'src/app/store/selectors/list-episode.selectors';
+import * as EpisodeDataAction from '../../../store/actions/read-episode.actions';
 import { ReadEpisodeComponent } from '../read-episode/read-episode.component';
 
 @Component({
@@ -10,26 +12,28 @@ import { ReadEpisodeComponent } from '../read-episode/read-episode.component';
 	styleUrls: ['./list-episode.component.scss', '../../base/base.component.scss'],
 })
 export class ListEpisodeComponent implements OnInit {
+	episodeList$!: Observable<[]>;
 	episodeList!: [];
-	episodeUrlDate!: ApiEpisodeModel;
+	subscription: Subscription[] = [];
 
-	constructor(private serv: ServiceEpisodeService, private dialog: MatDialog) {}
-
-	ngOnInit(): void {
-		this.respListLocation();
+	constructor(private dialog: MatDialog, private store: Store) {
+		this.episodeList$ = this.store.select(getListEpisode);
 	}
 
-	respListLocation() {
-		this.episodeList = this.serv.getEpisodeList();
+	ngOnInit(): void {
+		this.dataPage();
+	}
+
+	dataPage() {
+		this.subscription.push(
+			this.episodeList$.subscribe((data) => {
+				this.episodeList = data;
+			})
+		);
 	}
 
 	openDialog(episodeUrl: string) {
-		let index = episodeUrl.indexOf('/episode/');
-		let id = episodeUrl.substring(index + 9);
-		this.serv.episodeUrl(id).subscribe((data) => {
-			this.episodeUrlDate = data;
-			this.dialog.open(ReadEpisodeComponent);
-			return this.serv.setEpisodeInfo(this.episodeUrlDate);
-		});
+		this.store.dispatch(EpisodeDataAction.loadReadEpisodes({ urlBase: episodeUrl }));
+		this.dialog.open(ReadEpisodeComponent);
 	}
 }

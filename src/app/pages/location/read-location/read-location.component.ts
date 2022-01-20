@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 import { ApiLocationModel } from 'src/app/service/model/location.model';
-import { ServiceLocationService } from 'src/app/service/service-location.service';
+import { getReadLocationError, getReadLocationSuccess } from 'src/app/store/selectors/read-location.selectors';
 
 @Component({
 	selector: 'app-read-location',
@@ -9,42 +10,32 @@ import { ServiceLocationService } from 'src/app/service/service-location.service
 	styleUrls: ['./read-location.component.scss', '../../base/base.component.scss'],
 })
 export class ReadLocationComponent implements OnInit {
-	locationInfo!: ApiLocationModel;
-	locationInfoError!: string;
-	locationResidents!: [];
+	locationData$!: Observable<ApiLocationModel | null>;
+	locationData!: ApiLocationModel | null;
+	locationDataErro$!: Observable<string>;
+	locationDataErro!: string;
 
-	isValid!: boolean;
+	subscription: Subscription[] = [];
 
-	constructor(
-		private serv: ServiceLocationService,
-		private servLocation: ServiceLocationService,
-		private activatedRoute: ActivatedRoute
-	) {}
+	constructor(private store: Store) {
+		this.locationData$ = this.store.select(getReadLocationSuccess);
+		this.locationDataErro$ = this.store.select(getReadLocationError);
+	}
 
 	ngOnInit(): void {
-		this.dataUrlLocation();
-		this.respLocation();
+		this.actionPage();
 	}
 
-	respLocation() {
-		this.locationInfo = this.servLocation.getLocationInfo();
-		if (this.locationInfo.id <= 999) {
-			this.isValid = true;
-		} else {
-			this.isValid = false;
-		}
-	}
-
-	dataUrlLocation() {
-		const id = this.activatedRoute.snapshot.params.id;
-		this.serv.locationUrl(id).subscribe(
-			(data: ApiLocationModel) => {
-				this.locationResidents = data.residents;
-				this.locationInfo = data;
-			},
-			(erro: string) => {
-				this.locationInfoError = erro;
-			}
+	actionPage() {
+		this.subscription.push(
+			this.locationData$.subscribe((data) => {
+				this.locationData = data;
+			})
+		);
+		this.subscription.push(
+			this.locationDataErro$.subscribe((erro) => {
+				this.locationDataErro = erro;
+			})
 		);
 	}
 }

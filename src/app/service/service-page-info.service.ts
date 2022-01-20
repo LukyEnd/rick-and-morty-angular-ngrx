@@ -10,7 +10,7 @@ import { ApiPageModel } from './model/page.module';
 export class ServicePageInfoService {
 	constructor(private http: HttpClient) {}
 
-	apiPageInfo(url: string): Observable<ApiPageModel> {
-		return this.http.get(url).pipe(pluck('info'));
+	apiPageInfo(urlPage: string): Observable<ApiPageModel> {
+		return this.http.get(urlPage).pipe(pluck('info'));
 	}
 }

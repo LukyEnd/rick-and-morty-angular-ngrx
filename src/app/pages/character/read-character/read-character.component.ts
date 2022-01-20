@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ApiLocationModel } from 'src/app/service/model/location.model';
-import { ServiceCharacterService } from 'src/app/service/service-character.service';
-import { ServiceEpisodeService } from 'src/app/service/service-episode.service';
-import { ServiceLocationService } from 'src/app/service/service-location.service';
-import { ApiCharacterModel } from '../../../service/model/character.model';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import * as ListEpisodeAction from '../../../store/actions/list-episode.actions';
+import * as LocationReadAction from '../../../store/actions/read-location.actions';
 import { ListEpisodeComponent } from '../../episode/list-episode/list-episode.component';
 import { ReadLocationComponent } from '../../location/read-location/read-location.component';
+import { ApiCharacterModel } from './../../../service/model/character.model';
+import { getReadCharacterError, getReadCharacterSuccess } from './../../../store/selectors/read-character.selectors';
 
 @Component({
 	selector: 'app-read-character',
@@ -14,37 +15,40 @@ import { ReadLocationComponent } from '../../location/read-location/read-locatio
 	styleUrls: ['./read-character.component.scss', '../../base/base.component.scss'],
 })
 export class ReadCharacterComponent implements OnInit {
-	charSuccess!: ApiCharacterModel;
+	charData$!: Observable<ApiCharacterModel | null>;
+	charData!: ApiCharacterModel | null;
 
-	locationUrlDate!: ApiLocationModel;
+	charDataError$!: Observable<string>;
+	charDataError!: string;
 
-	constructor(
-		private serv: ServiceCharacterService,
-		private servLocation: ServiceLocationService,
-		private dialog: MatDialog,
-		private resp: ServiceEpisodeService
-	) {}
+	subscription: Subscription[] = [];
 
+	constructor(private dialog: MatDialog, private store: Store) {
+		this.charData$ = this.store.select(getReadCharacterSuccess);
+		this.charDataError$ = this.store.select(getReadCharacterError);
+	}
 	ngOnInit(): void {
-		this.respCharacter();
+		this.actionPage();
 	}
-
-	respCharacter() {
-		this.charSuccess = this.serv.getCharacterInfo();
+	actionPage() {
+		this.subscription.push(
+			this.charData$.subscribe((data) => {
+				this.charData = data;
+			})
+		);
+		this.subscription.push(
+			this.charDataError$.subscribe((error) => {
+				this.charDataError = error;
+			})
+		);
 	}
-
 	openDialog(locationUrl: string) {
-		let index = locationUrl.indexOf('/location/');
-		let id = locationUrl.substring(index + 10);
-		this.servLocation.locationUrl(id).subscribe((data) => {
-			this.locationUrlDate = data;
-			this.dialog.open(ReadLocationComponent);
-			return this.servLocation.setLocationInfo(this.locationUrlDate);
-		});
+		this.store.dispatch(LocationReadAction.loadReadLocations({ urlBase: locationUrl }));
+		this.dialog.open(ReadLocationComponent);
 	}
 
 	openList(listEpisode: []) {
+		this.store.dispatch(ListEpisodeAction.loadListEpisodes({ listEpisode: listEpisode }));
 		this.dialog.open(ListEpisodeComponent);
-		return this.resp.setEpisodeList(listEpisode);
 	}
 }

@@ -1,40 +1,44 @@
-<div class="scroolable">
+<div class="scroolable" *ngIf="charData != null">
 	<li>
 		<h1>
-			<strong>{{ charSuccess.name }}</strong>
+			<strong>{{ charData.name }}</strong>
 		</h1>
 	</li>
 	<li>
-		<img [src]="charSuccess.image" />
+		<img [src]="charData.image" />
 	</li>
 	<li>
-		<strong>ID: </strong> {{ charSuccess.id }}
+		<strong>ID: </strong> {{ charData.id }}
 	</li>
 	<li>
-		<strong>Estado: </strong>{{ charSuccess.status | translatorsBr}}
+		<strong>Estado: </strong>{{ charData.status | translatorsBr}}
 	</li>
 	<li>
-		<strong>Espécie: </strong>{{ charSuccess.species | translatorsBr}}
+		<strong>Espécie: </strong>{{ charData.species | translatorsBr}}
 	</li>
 	<li>
-		<strong>Tipo: </strong>{{ charSuccess.type | translatorsBr}}
+		<strong>Tipo: </strong>{{ charData.type | translatorsBr}}
 	</li>
 	<li>
-		<strong>Gênero: </strong>{{ charSuccess.gender | translatorsBr}}
+		<strong>Gênero: </strong>{{ charData.gender | translatorsBr}}
 	</li>
 	<li>
-		<strong>Lugar de Origem: </strong> {{ charSuccess.origin.name | translatorsBr}} - <a [routerLink]=""
-			(click)="openDialog(charSuccess.origin.url)"> Mais Informações...</a>
+		<strong>Lugar de Origem: </strong> {{ charData.origin.name | translatorsBr}} - <a [routerLink]=""
+			(click)="openDialog(charData.origin.url)"> Mais Informações...</a>
 	</li>
 	<li>
-		<strong> Localização Atual: </strong> {{ charSuccess.location.name | translatorsBr}} - <a [routerLink]=""
-			(click)="openDialog(charSuccess.location.url)"> Mais Informações...</a>
+		<strong> Localização Atual: </strong> {{ charData.location.name | translatorsBr}} - <a [routerLink]=""
+			(click)="openDialog(charData.location.url)"> Mais Informações...</a>
 	</li>
 	<li>
-		<strong> Data de Criação: </strong>{{ charSuccess.created | date: 'dd/MM/yyyy' }}
+		<strong> Data de Criação: </strong>{{ charData.created | date: 'dd/MM/yyyy' }}
 	</li>
 	<li class="ult">
-		<strong> Lista de Ep. Participados por {{ charSuccess.name }}: </strong><a [routerLink]=""
-			(click)="openList(charSuccess.episode)"> Abrir...</a>
+		<strong> Lista de Ep. Participados por {{ charData.name }}: </strong><a [routerLink]=""
+			(click)="openList(charData.episode)"> Abrir...</a>
 	</li>
 </div>
+<div *ngIf="charData == null">
+	<h2>Desculpe, Informação Desconhecida</h2>
+</div>
+

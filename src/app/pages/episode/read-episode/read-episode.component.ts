@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { ApiCharacterModel } from 'src/app/service/model/character.model';
-import { ServiceCharacterService } from 'src/app/service/service-character.service';
-import { ServiceEpisodeService } from 'src/app/service/service-episode.service';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { getReadEpisodeError, getReadEpisodeSuccess } from 'src/app/store/selectors/read-episode.selectors';
+import * as CharReadAction from '../../../store/actions/read-character.actions';
 import { ReadCharacterComponent } from '../../character/read-character/read-character.component';
 import { ApiEpisodeModel } from './../../../service/model/episode.model';
 
@@ -13,53 +13,38 @@ import { ApiEpisodeModel } from './../../../service/model/episode.model';
 	styleUrls: ['./read-episode.component.scss', '../../base/base.component.scss'],
 })
 export class ReadEpisodeComponent implements OnInit {
-	episodeInfo!: ApiEpisodeModel;
-	episodeInfoError!: string;
+	episodeData$!: Observable<ApiEpisodeModel | null>;
+	episodeData!: ApiEpisodeModel | null;
 
-	charUrlDate!: ApiCharacterModel;
+	episodeDataErro$!: Observable<string>;
+	episodeDataErro!: string;
 
-	isValid!: boolean;
+	substring: Subscription[] = [];
 
-	constructor(
-		private serv: ServiceEpisodeService,
-		private activatedRoute: ActivatedRoute,
-		private resp: ServiceCharacterService,
-		private dialog: MatDialog
-	) {}
+	constructor(private dialog: MatDialog, private store: Store) {
+		this.episodeData$ = this.store.select(getReadEpisodeSuccess);
+		this.episodeDataErro$ = this.store.select(getReadEpisodeError);
+	}
 
 	ngOnInit(): void {
-		this.dataUrlEpisode();
-		this.respEpisode();
+		this.dataPage();
 	}
 
-	respEpisode() {
-		this.episodeInfo = this.serv.getEpidoseInfo();
-		if (this.episodeInfo.id <= 999) {
-			this.isValid = true;
-		} else {
-			this.isValid = false;
-		}
-	}
-
-	dataUrlEpisode() {
-		const id = this.activatedRoute.snapshot.params.id;
-		this.serv.episodeUrl(id).subscribe(
-			(data: ApiEpisodeModel) => {
-				this.episodeInfo = data;
-			},
-			(erro: string) => {
-				this.episodeInfoError = erro;
-			}
+	dataPage() {
+		this.substring.push(
+			this.episodeData$.subscribe((data) => {
+				this.episodeData = data;
+			})
+		);
+		this.substring.push(
+			this.episodeDataErro$.subscribe((erro) => {
+				this.episodeDataErro = erro;
+			})
 		);
 	}
 
-	openDialog(characterURL: string) {
-		let index = characterURL.indexOf('/character/');
-		let id = characterURL.substring(index + 11);
-		this.resp.characterUrl(id).subscribe((data) => {
-			this.charUrlDate = data;
-			this.dialog.open(ReadCharacterComponent);
-			return this.resp.setCharacterInfo(this.charUrlDate);
-		});
+	openDialog(characterUrl: string) {
+		this.store.dispatch(CharReadAction.loadReadCharacters({ urlBase: characterUrl }));
+		this.dialog.open(ReadCharacterComponent);
 	}
 }

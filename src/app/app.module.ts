@@ -4,8 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { FooterComponent } from './buttons/footer/footer.component';
 import { HeaderComponent } from './buttons/header/header.component';
 import { CarouselComponent } from './carousel/carousel.component';
 import { StyleBaseComponent } from './pages/base/base.component';
@@ -23,6 +26,14 @@ import { ThroughStringCharacterPipe } from './pipe/through-string-character.pipe
 import { ThroughStringEpisodePipe } from './pipe/through-string-episode.pipe';
 import { TranslatorsBrPipe } from './pipe/translators-br.pipe';
 import { TranslatorsMonthPipe } from './pipe/translators-month.pipe';
+import { PageCharacterEffects } from './store/effects/page-character.effects';
+import { PageEpisodeEffects } from './store/effects/page-episode.effects';
+import { PageInfoEffects } from './store/effects/page-info.effects';
+import { PageLocationEffects } from './store/effects/page-location.effects';
+import { ReadCharacterEffects } from './store/effects/read-character.effects';
+import { ReadEpisodeEffects } from './store/effects/read-episode.effects';
+import { ReadLocationEffects } from './store/effects/read-location.effects';
+import { reducers } from './store/reducers/root.reducer';
 
 @NgModule({
 	declarations: [
@@ -44,8 +55,26 @@ import { TranslatorsMonthPipe } from './pipe/translators-month.pipe';
 		TranslatorsBrPipe,
 		TranslatorsMonthPipe,
 		ErrorComponent,
+		FooterComponent,
 	],
-	imports: [BrowserModule, AppRoutingModule, HttpClientModule, BrowserAnimationsModule, MatCardModule, MatDialogModule],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		HttpClientModule,
+		BrowserAnimationsModule,
+		MatCardModule,
+		StoreModule.forRoot(reducers, {}),
+		MatDialogModule,
+		EffectsModule.forRoot([
+			PageCharacterEffects,
+			PageEpisodeEffects,
+			PageInfoEffects,
+			PageLocationEffects,
+			ReadCharacterEffects,
+			ReadEpisodeEffects,
+			ReadLocationEffects,
+		]),
+	],
 	providers: [],
 	bootstrap: [AppComponent],
 })

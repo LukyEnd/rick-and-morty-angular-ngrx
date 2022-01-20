@@ -109,5 +109,8 @@
       }
     }
   },
-  "defaultProject": "ApiRick"
+  "defaultProject": "ApiRick",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

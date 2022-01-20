@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ServiceCharacterService } from 'src/app/service/service-character.service';
-import { ServicePageInfoService } from 'src/app/service/service-page-info.service';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { getPageCharacterError, getPageCharacterSuccess } from 'src/app/store/selectors/page-character.selectors';
+import { getPageInfoError, getPageInfoSuccess } from 'src/app/store/selectors/page-info.selectors';
 import { environment } from 'src/environments/environment.prod';
-import { ApiCharacterModel } from '../../service/model/character.model';
+import * as CharacterInfoAction from '../../store/actions/page-character.actions';
+import * as PageInfoAction from '../../store/actions/page-info.actions';
+import * as CharReadAction from '../../store/actions/read-character.actions';
+import { ApiCharacterModel } from './../../service/model/character.model';
+import { ApiPageModel } from './../../service/model/page.module';
 import { ReadCharacterComponent } from './read-character/read-character.component';
 
 @Component({
@@ -12,77 +18,74 @@ import { ReadCharacterComponent } from './read-character/read-character.componen
 	styleUrls: ['./character.component.scss', '../base/base.component.scss'],
 })
 export class CharacterComponent implements OnInit {
-	charSuccess!: ApiCharacterModel[];
-	charErro!: string;
-	currentUrl!: string;
+	pageInfo$!: Observable<ApiPageModel | null>;
+	pageInfo!: ApiPageModel | null;
+	pageInfoErro$!: Observable<string>;
+	pageInfoErro!: string;
 
-	buttonPrevNull: boolean = false;
-	buttonNextNull: boolean = true;
+	characterData$!: Observable<ApiCharacterModel[]>;
+	chararterData!: ApiCharacterModel[];
+	characterDataErro$!: Observable<string>;
+	characterDataErro!: string;
 
-	constructor(private serv: ServiceCharacterService, private dialog: MatDialog, private resp: ServicePageInfoService) {}
+	subscription: Subscription[] = [];
+
+	constructor(private dialog: MatDialog, private store: Store) {
+		this.characterData$ = this.store.select(getPageCharacterSuccess);
+		this.characterDataErro$ = this.store.select(getPageCharacterError);
+		this.pageInfo$ = this.store.select(getPageInfoSuccess);
+		this.pageInfoErro$ = this.store.select(getPageInfoError);
+	}
 
 	ngOnInit(): void {
-		this.characterInfo();
+		this.actionPageInitial();
+		this.dataPage();
 	}
 
-	characterInfo() {
-		this.serv.apiCharacterInfo().subscribe(
-			(data) => {
-				this.charSuccess = data;
-				this.currentUrl = `${environment.url}character`;
-			},
-			(error) => {
-				this.charErro = error;
-			}
+	actionPageInitial() {
+		this.store.dispatch(CharacterInfoAction.loadPageCharacters({ urlBase: `${environment.url}character` }));
+		this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: `${environment.url}character` }));
+	}
+
+	dataPage() {
+		this.subscription.push(
+			this.characterData$.subscribe((data) => {
+				this.chararterData = data;
+			})
+		);
+		this.subscription.push(
+			this.characterDataErro$.subscribe((error) => {
+				this.characterDataErro = error;
+			})
+		);
+		this.subscription.push(
+			this.pageInfo$.subscribe((data) => {
+				this.pageInfo = data;
+			})
+		);
+		this.subscription.push(
+			this.pageInfoErro$.subscribe((error) => {
+				this.pageInfoErro = error;
+			})
 		);
 	}
 
-	pagePrevInfo() {
-		this.resp.apiPageInfo(this.currentUrl).subscribe(
-			(pageInfo) => {
-				let index = pageInfo.prev.indexOf('page=');
-				let id = pageInfo.prev.substring(index + 5);
-				if (pageInfo.prev == null || id == '1') {
-					this.buttonPrevNull = false;
-					this.currentUrl = `${environment.url}character`;
-				} else {
-					this.buttonNextNull = true;
-					this.currentUrl = pageInfo.prev;
-				}
-				this.serv.buttonPageCharacter(pageInfo.prev).subscribe((data) => {
-					this.charSuccess = data;
-				});
-			},
-			(erro) => {
-				this.charErro = erro;
-			}
-		);
+	buttonNext() {
+		if (this.pageInfo?.next != null) {
+			this.store.dispatch(CharacterInfoAction.loadPageCharacters({ urlBase: this.pageInfo.next }));
+			this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: this.pageInfo.next }));
+		}
 	}
 
-	pageNextInfo() {
-		this.resp.apiPageInfo(this.currentUrl).subscribe(
-			(pageInfo) => {
-				let index = pageInfo.next.indexOf('page=');
-				let id = pageInfo.next.substring(index + 5);
-				if (pageInfo.next == null || id == `${pageInfo.pages}`) {
-					this.currentUrl = pageInfo.next;
-					this.buttonNextNull = false;
-				} else {
-					this.buttonPrevNull = true;
-					this.currentUrl = pageInfo.next;
-				}
-				this.serv.buttonPageCharacter(pageInfo.next).subscribe((data) => {
-					this.charSuccess = data;
-				});
-			},
-			(erro) => {
-				this.charErro = erro;
-			}
-		);
+	buttonPrev() {
+		if (this.pageInfo?.prev != null) {
+			this.store.dispatch(CharacterInfoAction.loadPageCharacters({ urlBase: this.pageInfo.prev }));
+			this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: this.pageInfo.prev }));
+		}
 	}
 
-	openDialog(characterInfo: ApiCharacterModel): ApiCharacterModel {
+	openDialog(characterUrl: string) {
+		this.store.dispatch(CharReadAction.loadReadCharacters({ urlBase: characterUrl }));
 		this.dialog.open(ReadCharacterComponent);
-		return this.serv.setCharacterInfo(characterInfo);
 	}
 }
