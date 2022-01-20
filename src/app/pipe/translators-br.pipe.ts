@@ -4,82 +4,85 @@ import { Pipe, PipeTransform } from '@angular/core';
 	name: 'translatorsBr',
 })
 export class TranslatorsBrPipe implements PipeTransform {
-	transform(value: string, args?: any): any {
+	transform(value: string, args?: any): string {
 		//Sobre Personagens -----------------------------------------
 		switch (value) {
 			case 'Alive':
 				value = 'Vivo';
-				return value
+				return value;
 			case 'Dead':
-				value ='Morto';
+				value = 'Morto';
 				return value;
 			case 'Human':
-				value ='Humano';
+				value = 'Humano';
 				return value;
 			case 'Male':
-				value ='Masculino';
+				value = 'Masculino';
 				return value;
 			case 'Female':
-				value ='Feminino';
+				value = 'Feminino';
 				return value;
 			//Sobre Locais -----------------------------------------
 			case 'Earth (Replacement Dimension)':
-				value ='Earth (Replacement...';
+				value = 'Earth (Replacement...';
 				return value;
 			case 'Planet':
-				value ='Planeta';
+				value = 'Planeta';
 				return value;
 			case 'Microverse':
-				value ='Microverso';
+				value = 'Microverso';
 				return value;
 			case 'Fantasy town':
-				value ='Cidade da fantasia';
+				value = 'Cidade da fantasia';
 				return value;
 			case 'Space station':
-				value ='Estação Espacial';
+				value = 'Estação Espacial';
 				return value;
 			case 'Dream':
-				value ='Sonho';
+				value = 'Sonho';
 				return value;
 			case 'Dimension':
-				value ='Dimensão';
+				value = 'Dimensão';
 				return value;
 			case 'Menagerie':
-				value ='zoológico';
+				value = 'zoológico';
 				return value;
 			case 'Customs':
-				value ='Alfândega';
+				value = 'Alfândega';
 				return value;
 			case 'Dwarf planet (Celestial Dwarf)':
-				value ='Planeta Anão (Anão Celestial)';
+				value = 'Planeta Anão (Anão Celestial)';
 				return value;
 			case 'Miniverse':
-				value ='Miniverso';
+				value = 'Miniverso';
 				return value;
 			case 'Teenyverse':
-				value ='Pequeno verso';
+				value = 'Pequeno verso';
 				return value;
 			case 'Box':
-				value ='Pequeno Caixa';
+				value = 'Pequeno Caixa';
 				return value;
 			case 'Spacecraft':
-				value ='Nave espacial';
+				value = 'Nave espacial';
 				return value;
 			case 'Artificially generated world':
-				value ='Mundo gerado artificialmente';
+				value = 'Mundo gerado artificialmente';
 				return value;
 			case 'Machine':
-				value ='Máquina';
+				value = 'Máquina';
 				return value;
 			case 'Arcade':
-				value ='videogames';
+				value = 'videogames';
 				return value;
 			case 'Cluster':
-				value ='Espaço';
+				value = 'Espaço';
 				return value;
 			//Outros -----------------------------------------
-			case '' || 'unknown':
-				value ='Desconhecido';
+			case '':
+				value = 'Desconhecido';
+				return value;
+			case 'unknown':
+				value = 'Desconhecido';
 				return value;
 			default:
 				return value;
