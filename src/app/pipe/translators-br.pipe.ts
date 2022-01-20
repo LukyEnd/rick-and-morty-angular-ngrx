@@ -8,82 +8,81 @@ export class TranslatorsBrPipe implements PipeTransform {
 		//Sobre Personagens -----------------------------------------
 		switch (value) {
 			case 'Alive':
-				'Vivo';
-				break;
+				value = 'Vivo';
+				return value
 			case 'Dead':
-				'Morto';
-				break;
+				value ='Morto';
+				return value;
 			case 'Human':
-				'Humano';
-				break;
+				value ='Humano';
+				return value;
 			case 'Male':
-				'Masculino';
-				break;
+				value ='Masculino';
+				return value;
 			case 'Female':
-				'Feminino';
-				break;
+				value ='Feminino';
+				return value;
 			//Sobre Locais -----------------------------------------
 			case 'Earth (Replacement Dimension)':
-				'Earth (Replacement...';
-				break;
+				value ='Earth (Replacement...';
+				return value;
 			case 'Planet':
-				'Planeta';
-				break;
+				value ='Planeta';
+				return value;
 			case 'Microverse':
-				'Microverso';
-				break;
+				value ='Microverso';
+				return value;
 			case 'Fantasy town':
-				'Cidade da fantasia';
-				break;
+				value ='Cidade da fantasia';
+				return value;
 			case 'Space station':
-				'Estação Espacial';
-				break;
+				value ='Estação Espacial';
+				return value;
 			case 'Dream':
-				'Sonho';
-				break;
+				value ='Sonho';
+				return value;
 			case 'Dimension':
-				'Dimensão';
-				break;
+				value ='Dimensão';
+				return value;
 			case 'Menagerie':
-				'zoológico';
-				break;
+				value ='zoológico';
+				return value;
 			case 'Customs':
-				'Alfândega';
-				break;
+				value ='Alfândega';
+				return value;
 			case 'Dwarf planet (Celestial Dwarf)':
-				'Planeta Anão (Anão Celestial)';
-				break;
+				value ='Planeta Anão (Anão Celestial)';
+				return value;
 			case 'Miniverse':
-				'Miniverso';
-				break;
+				value ='Miniverso';
+				return value;
 			case 'Teenyverse':
-				'Pequeno verso';
-				break;
+				value ='Pequeno verso';
+				return value;
 			case 'Box':
-				'Pequeno Caixa';
-				break;
+				value ='Pequeno Caixa';
+				return value;
 			case 'Spacecraft':
-				'Nave espacial';
-				break;
+				value ='Nave espacial';
+				return value;
 			case 'Artificially generated world':
-				'Mundo gerado artificialmente';
-				break;
+				value ='Mundo gerado artificialmente';
+				return value;
 			case 'Machine':
-				'Máquina';
-				break;
+				value ='Máquina';
+				return value;
 			case 'Arcade':
-				'videogames';
-				break;
+				value ='videogames';
+				return value;
 			case 'Cluster':
-				'Espaço';
-				break;
+				value ='Espaço';
+				return value;
 			//Outros -----------------------------------------
 			case '' || 'unknown':
-				'Desconhecido';
-				break;
+				value ='Desconhecido';
+				return value;
 			default:
-				value;
-				break;
+				return value;
 		}
 	}
 }
