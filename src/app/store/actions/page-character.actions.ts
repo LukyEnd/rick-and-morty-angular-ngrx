@@ -1,17 +1,16 @@
 import { ApiCharacterModel } from 'src/app/service/model/character.model';
 import { createAction, props } from '@ngrx/store';
 
-export const loadPageCharacters = createAction(
-  '[PageCharacter] Load PageCharacters',
-  props<{ urlBase: string}>()
-);
+export const loadPageCharacters = createAction('[PageCharacters] Load PageCharacters', props<{ urlBase: string }>());
 
 export const loadPageCharactersSuccess = createAction(
-  '[PageCharacter] Load PageCharacters Success',
-  props<{ charData: ApiCharacterModel[] }>()
+	'[PageCharacters] Load PageCharacters Success',
+	props<{ charData: ApiCharacterModel[] }>()
 );
 
+export const loadLoadingPage = createAction('[LoadingPage] Load Loading Page', props<{ loading: boolean }>());
+
 export const loadPageCharactersFailure = createAction(
-  '[PageCharacter] Load PageCharacters Failure',
-  props<{ error: string }>()
+	'[PageCharacters] Load PageCharacters Failure',
+	props<{ error: string }>()
 );

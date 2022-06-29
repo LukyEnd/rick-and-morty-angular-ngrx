@@ -14,6 +14,7 @@ export class PageLocationEffects {
 			mergeMap((data) =>
 				this.serv.apiLocationData(data.urlBase).pipe(
 					map((locationData) => {
+						PageLocationActions.loadLoadingPage({ loading: true });
 						return PageLocationActions.loadPageLocationsSuccess({ locationData: locationData });
 					})
 				)

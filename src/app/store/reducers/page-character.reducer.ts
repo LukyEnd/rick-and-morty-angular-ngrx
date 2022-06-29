@@ -6,11 +6,13 @@ export const pageCharacterFeatureKey = 'pageCharacter';
 
 export interface CharacterState {
 	charData: ApiCharacterModel[];
+	loading: boolean;
 	error: string;
 }
 
 export const initialState: CharacterState = {
 	charData: [],
+	loading: true,
 	error: '',
 };
 
@@ -21,6 +23,12 @@ export const characterReducer = createReducer(
 			...state,
 			charData: action.charData,
 			error: '',
+		};
+	}),
+	on(PageCharacterActions.loadLoadingPage, (state, action) => {
+		return {
+			...state,
+			loading: action.loading,
 		};
 	}),
 	on(PageCharacterActions.loadPageCharactersFailure, (state, action) => {

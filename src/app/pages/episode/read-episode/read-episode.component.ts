@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { getReadEpisodeError, getReadEpisodeSuccess } from 'src/app/store/selectors/read-episode.selectors';
+import { AppState } from 'src/app/store/state/app.state';
 import * as CharReadAction from '../../../store/actions/read-character.actions';
 import { ReadCharacterComponent } from '../../character/read-character/read-character.component';
 import { ApiEpisodeModel } from './../../../service/model/episode.model';
@@ -13,24 +14,23 @@ import { ApiEpisodeModel } from './../../../service/model/episode.model';
 	styleUrls: ['./read-episode.component.scss', '../../base/base.component.scss'],
 })
 export class ReadEpisodeComponent implements OnInit {
-	episodeData$!: Observable<ApiEpisodeModel | null>;
-	episodeData!: ApiEpisodeModel | null;
+	public episodeData$!: Observable<ApiEpisodeModel | null>;
+	public episodeData!: ApiEpisodeModel | null;
+	public episodeDataErro$!: Observable<string>;
+	public episodeDataErro!: string;
 
-	episodeDataErro$!: Observable<string>;
-	episodeDataErro!: string;
+	public substring: Subscription[] = [];
 
-	substring: Subscription[] = [];
-
-	constructor(private dialog: MatDialog, private store: Store) {
+	constructor(private dialog: MatDialog, private store: Store<AppState>) {
 		this.episodeData$ = this.store.select(getReadEpisodeSuccess);
 		this.episodeDataErro$ = this.store.select(getReadEpisodeError);
 	}
 
-	ngOnInit(): void {
+	public ngOnInit(): void {
 		this.dataPage();
 	}
 
-	dataPage() {
+	public dataPage(): void {
 		this.substring.push(
 			this.episodeData$.subscribe((data) => {
 				this.episodeData = data;
@@ -43,7 +43,7 @@ export class ReadEpisodeComponent implements OnInit {
 		);
 	}
 
-	openDialog(characterUrl: string) {
+	public openDialog(characterUrl: string): void {
 		this.store.dispatch(CharReadAction.loadReadCharacters({ urlBase: characterUrl }));
 		this.dialog.open(ReadCharacterComponent);
 	}

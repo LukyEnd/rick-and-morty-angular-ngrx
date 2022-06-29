@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { getListEpisode } from 'src/app/store/selectors/list-episode.selectors';
+import { AppState } from 'src/app/store/state/app.state';
 import * as EpisodeDataAction from '../../../store/actions/read-episode.actions';
 import { ReadEpisodeComponent } from '../read-episode/read-episode.component';
 
@@ -12,19 +13,19 @@ import { ReadEpisodeComponent } from '../read-episode/read-episode.component';
 	styleUrls: ['./list-episode.component.scss', '../../base/base.component.scss'],
 })
 export class ListEpisodeComponent implements OnInit {
-	episodeList$!: Observable<[]>;
-	episodeList!: [];
-	subscription: Subscription[] = [];
+	public episodeList$!: Observable<[]>;
+	public episodeList!: [];
+	public subscription: Subscription[] = [];
 
-	constructor(private dialog: MatDialog, private store: Store) {
+	constructor(private dialog: MatDialog, private store: Store<AppState>) {
 		this.episodeList$ = this.store.select(getListEpisode);
 	}
 
-	ngOnInit(): void {
+	public ngOnInit(): void {
 		this.dataPage();
 	}
 
-	dataPage() {
+	public dataPage(): void {
 		this.subscription.push(
 			this.episodeList$.subscribe((data) => {
 				this.episodeList = data;
@@ -32,7 +33,7 @@ export class ListEpisodeComponent implements OnInit {
 		);
 	}
 
-	openDialog(episodeUrl: string) {
+	public openDialog(episodeUrl: string): void {
 		this.store.dispatch(EpisodeDataAction.loadReadEpisodes({ urlBase: episodeUrl }));
 		this.dialog.open(ReadEpisodeComponent);
 	}

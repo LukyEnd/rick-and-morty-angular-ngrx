@@ -5,29 +5,38 @@ import * as PageEpisodeActions from '../actions/page-episode.actions';
 export const pageEpisodeFeatureKey = 'pageEpisode';
 
 export interface EpisodeState {
-  episodeData: ApiEpisodeModel[]
-  error: string
+	episodeData: ApiEpisodeModel[];
+	loading: boolean;
+	error: string;
 }
 
 export const initialState: EpisodeState = {
-  episodeData: [],
-  error: '',
+	episodeData: [],
+	loading: true,
+	error: '',
 };
 
 export const episodeReducer = createReducer(
-  initialState,
+	initialState,
 
-  on(PageEpisodeActions.loadPageEpisodesSuccess, (state, action): EpisodeState => {
-    return {
-      ...state,
-      episodeData: action.episodeData,
-      error: '',
-  }}),
-  on(PageEpisodeActions.loadPageEpisodesFailure, (state, action): EpisodeState => {
-    return {
-      ...state,
-      episodeData: [],
-      error: action.error,
-  }}),
-
+	on(PageEpisodeActions.loadPageEpisodesSuccess, (state, action): EpisodeState => {
+		return {
+			...state,
+			episodeData: action.episodeData,
+			error: '',
+		};
+	}),
+	on(PageEpisodeActions.loadLoadingPage, (state, action) => {
+		return {
+			...state,
+			loading: action.loading,
+		};
+	}),
+	on(PageEpisodeActions.loadPageEpisodesFailure, (state, action): EpisodeState => {
+		return {
+			...state,
+			episodeData: [],
+			error: action.error,
+		};
+	})
 );

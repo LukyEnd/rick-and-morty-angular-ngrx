@@ -1,11 +1,18 @@
 <div class="base">
 	<div class="title">
-		<h1>Lista de Personagens</h1>
+		<app-skeleton-loader class="skeleton-character-h1" *ngIf="!isLoading" Cwidth="500" Cheight="56">
+		</app-skeleton-loader>
+		<h1 *ngIf="isLoading">Lista de Personagens</h1>
 	</div>
 	<div class="container">
 		<div *ngFor="let character of chararterData" class="ngfor">
 			<mat-card>
-				<mat-card-title-group>
+				<mat-card-title-group *ngIf="!isLoading">
+					<div class="skeleton-character">
+						<app-skeleton-character></app-skeleton-character>
+					</div>
+				</mat-card-title-group>
+				<mat-card-title-group *ngIf="isLoading">
 					<mat-card-title class="card-title">
 						{{ character.name }}
 					</mat-card-title>
@@ -22,10 +29,11 @@
 					<mat-card-subtitle>
 						<strong>Localização Atual: </strong>{{ character.location.name | translatorsBr}}
 					</mat-card-subtitle>
-					<img mat-card-lg-image loading="lazy" [alt]="" [src]="character.image" />
+					<img mat-card-lg-image loading="lazy" [alt]="" [src]="character.image" *ngIf="isLoading" />
 				</mat-card-title-group>
 				<mat-card-content class="card-button">
-					<button mat-button class="button-mast" (click)="openDialog(character.url)"> Ver Mais...</button>
+					<button mat-button class="button-mast" (click)="openDialog(character.url)" *ngIf="isLoading"> Ver
+						Mais...</button>
 				</mat-card-content>
 			</mat-card>
 		</div>

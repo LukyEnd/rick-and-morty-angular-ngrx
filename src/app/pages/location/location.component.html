@@ -1,20 +1,27 @@
 <div class="base">
 	<div class="title">
-		<h1>Localizações</h1>
+		<app-skeleton-loader class="skeleton-h1" *ngIf="!isLoading" Cwidth="500" Cheight="56">
+		</app-skeleton-loader>
+		<h1 *ngIf="isLoading">Localizações</h1>
 	</div>
 	<div class="container">
 		<div *ngFor="let location of locationData" class="ngfor">
-			<li>
-				<h2><strong>{{ location.name }}</strong></h2>
-			</li>
-			<li><strong>ID: </strong>{{ location.id }}</li>
-			<li><strong>Tipo: </strong>{{ location.type | translatorsBr }}</li>
-			<li><strong>Dimensão: </strong>{{ location.dimension | translatorsBr}}</li>
-			<li>
-				<strong>Lista de Residentes: </strong><a [routerLink]=""
-					(click)="openList(location.residents)"> Abrir...</a>
-			</li>
-			<li><strong>Data de Criação: </strong>{{ location.created | date: 'dd/MM/yyyy' }}</li>
+			<div *ngIf="!isLoading">
+				<app-skeleton-location></app-skeleton-location>
+			</div>
+			<div *ngIf="isLoading">
+				<li>
+					<h2><strong>{{ location.name }}</strong></h2>
+				</li>
+				<li><strong>ID: </strong>{{ location.id }}</li>
+				<li><strong>Tipo: </strong>{{ location.type | translatorsBr }}</li>
+				<li><strong>Dimensão: </strong>{{ location.dimension | translatorsBr}}</li>
+				<li>
+					<strong>Lista de Residentes: </strong><a (click)="openList(location.residents)">
+						Abrir...</a>
+				</li>
+				<li><strong>Data de Criação: </strong>{{ location.created | date: 'dd/MM/yyyy' }}</li>
+			</div>
 		</div>
 	</div>
 	<div class="footer">

@@ -6,11 +6,13 @@ export const pageLocationFeatureKey = 'pageLocation';
 
 export interface LocationState {
 	locationData: ApiLocationModel[];
+	loading: boolean;
 	error: string;
 }
 
 export const initialState: LocationState = {
 	locationData: [],
+	loading: true,
 	error: '',
 };
 
@@ -21,6 +23,12 @@ export const locationReducer = createReducer(
 			...state,
 			locationData: action.locationData,
 			error: '',
+		};
+	}),
+	on(PageLocationActions.loadLoadingPage, (state, action) => {
+		return {
+			...state,
+			loading: action.loading,
 		};
 	}),
 	on(PageLocationActions.loadPageLocationsFailure, (state, action): LocationState => {

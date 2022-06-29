@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { ApiLocationModel } from 'src/app/service/model/location.model';
 import { getReadLocationError, getReadLocationSuccess } from 'src/app/store/selectors/read-location.selectors';
+import { AppState } from 'src/app/store/state/app.state';
 
 @Component({
 	selector: 'app-read-location',
@@ -10,23 +11,23 @@ import { getReadLocationError, getReadLocationSuccess } from 'src/app/store/sele
 	styleUrls: ['./read-location.component.scss', '../../base/base.component.scss'],
 })
 export class ReadLocationComponent implements OnInit {
-	locationData$!: Observable<ApiLocationModel | null>;
-	locationData!: ApiLocationModel | null;
-	locationDataErro$!: Observable<string>;
-	locationDataErro!: string;
+	public locationData$!: Observable<ApiLocationModel | null>;
+	public locationData!: ApiLocationModel | null;
+	public locationDataErro$!: Observable<string>;
+	public locationDataErro!: string;
 
-	subscription: Subscription[] = [];
+	public subscription: Subscription[] = [];
 
-	constructor(private store: Store) {
+	constructor(private store: Store<AppState>) {
 		this.locationData$ = this.store.select(getReadLocationSuccess);
 		this.locationDataErro$ = this.store.select(getReadLocationError);
 	}
 
-	ngOnInit(): void {
+	public ngOnInit(): void {
 		this.actionPage();
 	}
 
-	actionPage() {
+	public actionPage(): void {
 		this.subscription.push(
 			this.locationData$.subscribe((data) => {
 				this.locationData = data;

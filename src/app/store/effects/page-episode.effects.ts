@@ -15,6 +15,7 @@ export class PageEpisodeEffects {
 			mergeMap((data) =>
 				this.serv.apiEpisodeData(data.urlBase).pipe(
 					map((episodeData: ApiEpisodeModel[]) => {
+						PageEpisodeActions.loadLoadingPage({ loading: true });
 						return PageEpisodeActions.loadPageEpisodesSuccess({ episodeData: episodeData });
 					})
 				)

@@ -4,12 +4,14 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { getPageCharacterError, getPageCharacterSuccess } from 'src/app/store/selectors/page-character.selectors';
 import { getPageInfoError, getPageInfoSuccess } from 'src/app/store/selectors/page-info.selectors';
+import { AppState } from 'src/app/store/state/app.state';
 import { environment } from 'src/environments/environment.prod';
 import * as CharacterInfoAction from '../../store/actions/page-character.actions';
 import * as PageInfoAction from '../../store/actions/page-info.actions';
 import * as CharReadAction from '../../store/actions/read-character.actions';
 import { ApiCharacterModel } from './../../service/model/character.model';
 import { ApiPageModel } from './../../service/model/page.module';
+import { getPageLoading } from './../../store/selectors/page-character.selectors';
 import { ReadCharacterComponent } from './read-character/read-character.component';
 
 @Component({
@@ -18,36 +20,38 @@ import { ReadCharacterComponent } from './read-character/read-character.componen
 	styleUrls: ['./character.component.scss', '../base/base.component.scss'],
 })
 export class CharacterComponent implements OnInit {
-	pageInfo$!: Observable<ApiPageModel | null>;
-	pageInfo!: ApiPageModel | null;
-	pageInfoErro$!: Observable<string>;
-	pageInfoErro!: string;
+	public pageInfo$!: Observable<ApiPageModel | null>;
+	public pageInfo!: ApiPageModel | null;
+	public pageInfoErro$!: Observable<string>;
+	public pageInfoErro!: string;
+	public characterData$!: Observable<ApiCharacterModel[]>;
+	public chararterData!: ApiCharacterModel[];
+	public characterDataErro$!: Observable<string>;
+	public characterDataErro!: string;
+	public isLoading$!: Observable<boolean>;
+	public isLoading: boolean = false;
 
-	characterData$!: Observable<ApiCharacterModel[]>;
-	chararterData!: ApiCharacterModel[];
-	characterDataErro$!: Observable<string>;
-	characterDataErro!: string;
+	public subscription: Subscription[] = [];
 
-	subscription: Subscription[] = [];
-
-	constructor(private dialog: MatDialog, private store: Store) {
+	constructor(private dialog: MatDialog, private store: Store<AppState>) {
 		this.characterData$ = this.store.select(getPageCharacterSuccess);
 		this.characterDataErro$ = this.store.select(getPageCharacterError);
 		this.pageInfo$ = this.store.select(getPageInfoSuccess);
 		this.pageInfoErro$ = this.store.select(getPageInfoError);
+		this.isLoading$ = this.store.select(getPageLoading);
 	}
 
-	ngOnInit(): void {
+	public ngOnInit(): void {
 		this.actionPageInitial();
 		this.dataPage();
 	}
 
-	actionPageInitial() {
+	public actionPageInitial(): void {
 		this.store.dispatch(CharacterInfoAction.loadPageCharacters({ urlBase: `${environment.url}character` }));
 		this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: `${environment.url}character` }));
 	}
 
-	dataPage() {
+	public dataPage(): void {
 		this.subscription.push(
 			this.characterData$.subscribe((data) => {
 				this.chararterData = data;
@@ -68,23 +72,28 @@ export class CharacterComponent implements OnInit {
 				this.pageInfoErro = error;
 			})
 		);
+		this.subscription.push(
+			this.isLoading$.subscribe((statusLoading) => {
+				this.isLoading = statusLoading;
+			})
+		);
 	}
 
-	buttonNext() {
+	public buttonNext(): void {
 		if (this.pageInfo?.next != null) {
 			this.store.dispatch(CharacterInfoAction.loadPageCharacters({ urlBase: this.pageInfo.next }));
 			this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: this.pageInfo.next }));
 		}
 	}
 
-	buttonPrev() {
+	public buttonPrev(): void {
 		if (this.pageInfo?.prev != null) {
 			this.store.dispatch(CharacterInfoAction.loadPageCharacters({ urlBase: this.pageInfo.prev }));
 			this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: this.pageInfo.prev }));
 		}
 	}
 
-	openDialog(characterUrl: string) {
+	public openDialog(characterUrl: string): void {
 		this.store.dispatch(CharReadAction.loadReadCharacters({ urlBase: characterUrl }));
 		this.dialog.open(ReadCharacterComponent);
 	}

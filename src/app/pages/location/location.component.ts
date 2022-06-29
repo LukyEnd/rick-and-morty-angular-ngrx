@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { getPageLocationError, getPageLocationSuccess } from 'src/app/store/selectors/page-location.selectors';
+import { AppState } from 'src/app/store/state/app.state';
 import { environment } from 'src/environments/environment.prod';
 import { ApiLocationModel } from '../../service/model/location.model';
 import * as ListCharacterAction from '../../store/actions/list-character.actions';
@@ -10,6 +11,7 @@ import * as PageInfoAction from '../../store/actions/page-info.actions';
 import * as DataPageAction from '../../store/actions/page-location.actions';
 import { ListCharacterComponent } from '../character/list-character/list-character.component';
 import { ApiPageModel } from './../../service/model/page.module';
+import { getPageLoading } from './../../store/selectors/page-character.selectors';
 import { getPageInfoError, getPageInfoSuccess } from './../../store/selectors/page-info.selectors';
 
 @Component({
@@ -18,36 +20,38 @@ import { getPageInfoError, getPageInfoSuccess } from './../../store/selectors/pa
 	styleUrls: ['./location.component.scss', '../base/base.component.scss'],
 })
 export class LocationComponent implements OnInit {
-	locationData$!: Observable<ApiLocationModel[]>;
-	locationData!: ApiLocationModel[];
-	locationDataErro$!: Observable<string>;
-	locationDataErro!: string;
+	public locationData$!: Observable<ApiLocationModel[]>;
+	public locationData!: ApiLocationModel[];
+	public locationDataErro$!: Observable<string>;
+	public locationDataErro!: string;
+	public infoPage$!: Observable<ApiPageModel | null>;
+	public infoPage!: ApiPageModel | null;
+	public infoPageErro$!: Observable<string>;
+	public infoPageErro!: string;
+	public isLoading$!: Observable<boolean>;
+	public isLoading: boolean = false;
 
-	infoPage$!: Observable<ApiPageModel | null>;
-	infoPage!: ApiPageModel | null;
-	infoPageErro$!: Observable<string>;
-	infoPageErro!: string;
+	public subscription: Subscription[] = [];
 
-	subscription: Subscription[] = [];
-
-	constructor(private dialog: MatDialog, private store: Store) {
+	constructor(private dialog: MatDialog, private store: Store<AppState>) {
 		this.infoPage$ = this.store.select(getPageInfoSuccess);
 		this.infoPageErro$ = this.store.select(getPageInfoError);
 		this.locationData$ = this.store.select(getPageLocationSuccess);
+		this.isLoading$ = this.store.select(getPageLoading);
 		this.locationDataErro$ = this.store.select(getPageLocationError);
 	}
 
-	ngOnInit(): void {
+	public ngOnInit(): void {
 		this.actionLocation();
 		this.dataPageLocation();
 	}
 
-	actionLocation() {
+	public actionLocation(): void {
 		this.store.dispatch(DataPageAction.loadPageLocations({ urlBase: `${environment.url}location` }));
 		this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: `${environment.url}location` }));
 	}
 
-	dataPageLocation() {
+	public dataPageLocation(): void {
 		this.subscription.push(
 			this.infoPage$.subscribe((data) => {
 				this.infoPage = data;
@@ -68,23 +72,28 @@ export class LocationComponent implements OnInit {
 				this.locationDataErro = erro;
 			})
 		);
+		this.subscription.push(
+			this.isLoading$.subscribe((pageLoading) => {
+				this.isLoading = pageLoading;
+			})
+		);
 	}
 
-	buttonNextLocation() {
+	public buttonNextLocation(): void {
 		if (this.infoPage?.next != null) {
 			this.store.dispatch(DataPageAction.loadPageLocations({ urlBase: this.infoPage.next }));
 			this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: this.infoPage.next }));
 		}
 	}
 
-	buttonPrevLocation() {
+	public buttonPrevLocation(): void {
 		if (this.infoPage?.prev != null) {
 			this.store.dispatch(DataPageAction.loadPageLocations({ urlBase: this.infoPage.prev }));
 			this.store.dispatch(PageInfoAction.loadPageInfos({ urlBase: this.infoPage.prev }));
 		}
 	}
 
-	openList(charList: []) {
+	public openList(charList: []): void {
 		this.store.dispatch(ListCharacterAction.loadListCharacter({ listCharacter: charList }));
 		this.dialog.open(ListCharacterComponent);
 	}

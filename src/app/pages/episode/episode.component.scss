@@ -1,12 +1,26 @@
 .container,
 .title,
 .footer {
-    background-image: url("../../../assets/image/2.jpg"); 
+	background-image: url('../../../assets/image/2.jpg');
 }
+
 .ngfor {
-    background-color: rgba(255, 255, 255, 0.800);
-    border: 2px solid black;
-    width: 100%;
-    max-width: 400px;
-    height: 300px;
+	background-color: rgba(255, 255, 255, 0.8);
+	border: 2px solid black;
+	width: 100%;
+	max-width: 400px;
+	height: 300px;
+}
+
+.skeleton-episode-h1 {
+	background-color: #000000d2;
+	border-radius: 20px;
+	width: 100%;
+	max-width: 500px;
+	height: 55px;
+	margin-bottom: 2px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 2px;
 }

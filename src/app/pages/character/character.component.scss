@@ -3,16 +3,18 @@ img {
 	width: 100%;
 	max-width: 150px;
 }
+
 mat-card {
-	width: 100%;
 	width: 450px;
 	min-height: 250px;
 }
+
 .container,
 .title,
 .footer {
 	background-image: url('../../../assets/image/1.jpg');
 }
+
 .card-button {
 	position: absolute;
 	left: 97%;
@@ -20,9 +22,11 @@ mat-card {
 	margin-left: -110px;
 	margin-top: -70px;
 }
+
 .card-title {
 	padding-bottom: 10px;
 }
+
 .button-mast:hover {
 	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 	background-color: rgba(31, 31, 31, 0.582);
@@ -36,4 +40,23 @@ mat-card {
 	cursor: pointer;
 	-webkit-transition-duration: 0.4s;
 	transition-duration: 0.4s;
+}
+
+.skeleton-character-h1 {
+	background-color: #000000d2;
+	border-radius: 20px;
+	width: 100%;
+	max-width: 500px;
+	height: 55px;
+	margin-bottom: 2px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 2px;
+}
+
+.skeleton-character {
+	width: 100%;
+	margin: 0;
+	padding: 0;
 }

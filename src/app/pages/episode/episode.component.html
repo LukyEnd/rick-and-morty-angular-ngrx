@@ -1,20 +1,27 @@
 <div class="base">
 	<div class="title">
-		<h1>Episódios</h1>
+		<app-skeleton-loader class="skeleton-h1" *ngIf="!isLoading" Cwidth="500" Cheight="56">
+		</app-skeleton-loader>
+		<h1 *ngIf="isLoading">Episódios</h1>
 	</div>
 	<div class="container">
 		<div *ngFor="let episode of episodeData" class="ngfor">
-			<li>
-				<h2><strong>Episódio {{ episode.name }}</strong></h2>
-			</li>
-			<li><strong>ID: </strong>{{ episode.id }}</li>
-			<li><strong>Data de Lançamento: </strong>{{ episode.air_date }}</li>
-			<li><strong>Numero do Ep.: </strong>{{ episode.episode | episodeFormat}}</li>
-			<li>
-				<strong>Lista de Participantes desse Ep.: </strong><a [routerLink]=""
-					(click)="openList(episode.characters)"> Abrir...</a>
-			</li>
-			<li><strong>Data de Criação: </strong>{{ episode.created | date: 'dd/MM/yyyy' }}</li>
+			<div *ngIf="!isLoading">
+				<app-skeleton-episode></app-skeleton-episode>
+			</div>
+			<div *ngIf="isLoading">
+				<li>
+					<h2><strong>Episódio {{ episode.name }}</strong></h2>
+				</li>
+				<li><strong>ID: </strong>{{ episode.id }}</li>
+				<li><strong>Data de Lançamento: </strong>{{ episode.air_date }}</li>
+				<li><strong>Numero do Ep.: </strong>{{ episode.episode | episodeFormat}}</li>
+				<li>
+					<strong>Lista de Participantes desse Ep.: </strong><a (click)="openList(episode.characters)">
+						Abrir...</a>
+				</li>
+				<li><strong>Data de Criação: </strong>{{ episode.created | date: 'dd/MM/yyyy' }}</li>
+			</div>
 		</div>
 	</div>
 	<div class="footer">

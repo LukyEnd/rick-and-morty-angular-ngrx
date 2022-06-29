@@ -7,4 +7,6 @@ export const selectPageLocationState = createFeatureSelector<fromPageLocation.Lo
 
 export const getPageLocationSuccess = createSelector(selectPageLocationState, (state) => state.locationData);
 
+export const getPageLoading = createSelector(selectPageLocationState, (state) => state.loading);
+
 export const getPageLocationError = createSelector(selectPageLocationState, (state) => state.error);
