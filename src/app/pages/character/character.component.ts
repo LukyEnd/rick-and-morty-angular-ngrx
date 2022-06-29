@@ -39,11 +39,11 @@ export class CharacterComponent implements OnInit {
 		this.pageInfo$ = this.store.select(getPageInfoSuccess);
 		this.pageInfoErro$ = this.store.select(getPageInfoError);
 		this.isLoading$ = this.store.select(getPageLoading);
+		this.dataPage();
 	}
 
 	public ngOnInit(): void {
 		this.actionPageInitial();
-		this.dataPage();
 	}
 
 	public actionPageInitial(): void {
